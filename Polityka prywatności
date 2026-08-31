@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="UTF-8"><title>Polityka Prywatności</title></head>
+<body>
+<h1>Polityka Prywatności</h1>
+<p><strong>Ostatnia aktualizacja:</strong> 31 sierpnia 2026</p>
+<h2>1. Jakie dane są zbierane</h2>
+<p>Aplikacja pobiera z TikTok API wyłącznie publiczne metryki własnych filmów właściciela konta: wyświetlenia, polubienia, komentarze, udostępnienia oraz podstawowe informacje o filmie.</p>
+<h2>2. Jak dane są wykorzystywane</h2>
+<p>Dane są zapisywane wyłącznie w prywatnej bazie danych właściciela aplikacji i służą do osobistej analizy skuteczności contentu. Dane nie są sprzedawane ani udostępniane osobom trzecim.</p>
+<h2>3. Przechowywanie danych</h2>
+<p>Dane przechowywane są w prywatnej, niepublicznej bazie danych, dostępnej wyłącznie dla właściciela aplikacji.</p>
+<h2>4. Usuwanie danych</h2>
+<p>Właściciel aplikacji może w każdej chwili odłączyć aplikację od konta TikTok oraz usunąć zapisane dane.</p>
+</body>
+</html>
