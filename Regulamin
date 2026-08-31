@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="UTF-8"><title>Regulamin</title></head>
+<body>
+<h1>Regulamin</h1>
+<p><strong>Ostatnia aktualizacja:</strong> 31 sierpnia 2026</p>
+<h2>1. Czym jest ta aplikacja</h2>
+<p>Content Calendar Analytics to prywatna aplikacja stworzona wyłącznie do osobistego użytku właściciela w celu pobierania statystyk własnych, publicznie opublikowanych filmów na TikToku i zapisywania ich we własnej, prywatnej bazie danych do analizy contentu.</p>
+<h2>2. Zakres użycia</h2>
+<p>Aplikacja łączy się z TikTok API wyłącznie w celu odczytu danych z konta właściciela aplikacji. Nie jest udostępniana osobom trzecim, nie służy do celów komercyjnych.</p>
+<h2>3. Odpowiedzialność</h2>
+<p>Aplikacja działa na zasadzie "tak jak jest", bez gwarancji.</p>
+</body>
+</html>
