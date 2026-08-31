@@ -82,7 +82,7 @@ def find_notion_page(post_url):
     payload = {
         "filter": {
             "property": "Post URL",
-            "url": {"equals": post_url},
+            "url": {"starts_with": post_url},
         }
     }
     resp = requests.post(url, json=payload, headers=headers)
@@ -122,9 +122,11 @@ def main():
     skipped = 0
  
     for video in videos:
-        post_url = video.get("share_url")
-        if not post_url:
+        raw_url = video.get("share_url")
+        if not raw_url:
             continue
+ 
+        post_url = raw_url.split("?")[0]  # usuwa np. ?utm_campaign=...
  
         page_id = find_notion_page(post_url)
         if not page_id:
