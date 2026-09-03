@@ -394,7 +394,7 @@ def write_summary(video_stats, follower_count, follower_growth):
     print("Zaktualizowano stronę Podsumowanie.")
 
 
-
+def main():
     print("Pobieram token dostępu...")
     access_token = get_access_token()
 
