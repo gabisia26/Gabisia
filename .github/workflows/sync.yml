@@ -27,4 +27,6 @@ jobs:
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_FOLLOWERS_DATABASE_ID: ${{ secrets.NOTION_FOLLOWERS_DATABASE_ID }}
+          NOTION_SUMMARY_PAGE_ID: ${{ secrets.NOTION_SUMMARY_PAGE_ID }}
         run: python sync.py
