@@ -59,7 +59,7 @@ def get_video_stats(access_token):
     """Pobiera listę filmów wraz ze statystykami."""
     url = (
         "https://open.tiktokapis.com/v2/video/list/"
-        "?fields=id,title,view_count,like_count,comment_count,share_count,share_url,create_time"
+        "?fields=id,title,view_count,like_count,comment_count,share_count,share_url,create_time,duration"
     )
     headers = {
         "Authorization": f"Bearer {access_token}",
@@ -105,7 +105,7 @@ def find_notion_page(post_url):
     return results[0]["id"] if results else None
 
 
-def update_notion_page(page_id, views, likes, comments, shares):
+def update_notion_page(page_id, views, likes, comments, shares, duration=None):
     url = f"https://api.notion.com/v1/pages/{page_id}"
     headers = {
         "Authorization": f"Bearer {NOTION_TOKEN}",
@@ -120,11 +120,13 @@ def update_notion_page(page_id, views, likes, comments, shares):
             "Udostępnienia": {"number": shares},
         }
     }
+    if duration is not None:
+        payload["properties"]["Długość filmu (s)"] = {"number": duration}
     resp = requests.patch(url, json=payload, headers=headers)
     resp.raise_for_status()
 
 
-def create_notion_page(title, post_url, publish_date, views, likes, comments, shares):
+def create_notion_page(title, post_url, publish_date, views, likes, comments, shares, duration=None):
     """Tworzy nowy wiersz w Content Calendar dla filmu, którego tam jeszcze nie było."""
     url = "https://api.notion.com/v1/pages"
     headers = {
@@ -143,6 +145,7 @@ def create_notion_page(title, post_url, publish_date, views, likes, comments, sh
             "Polubienia": {"number": likes},
             "Komentarze": {"number": comments},
             "Udostępnienia": {"number": shares},
+            "Długość filmu (s)": {"number": duration},
         },
     }
     resp = requests.post(url, json=payload, headers=headers)
@@ -394,7 +397,38 @@ def write_summary(video_stats, follower_count, follower_growth):
     print("Zaktualizowano stronę Podsumowanie.")
 
 
+def ensure_properties():
+    """Dodaje do bazy kolumny na czas oglądania, długość i retencję (jeśli ich nie ma)."""
+    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}"
+    headers = {
+        "Authorization": f"Bearer {NOTION_TOKEN}",
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
+    }
+    resp = requests.get(url, headers=headers)
+    resp.raise_for_status()
+    existing = resp.json().get("properties", {})
+
+    new_props = {}
+    if "Średni czas oglądania (s)" not in existing:
+        new_props["Średni czas oglądania (s)"] = {"number": {"format": "number"}}
+    if "Długość filmu (s)" not in existing:
+        new_props["Długość filmu (s)"] = {"number": {"format": "number"}}
+    if "Retencja %" not in existing:
+        new_props["Retencja %"] = {
+            "formula": {
+                "expression": 'if(prop("Długość filmu (s)") > 0, round(prop("Średni czas oglądania (s)") / prop("Długość filmu (s)") * 1000) / 10, 0)'
+            }
+        }
+    if new_props:
+        r = requests.patch(url, json={"properties": new_props}, headers=headers)
+        r.raise_for_status()
+        print("Dodano kolumny:", ", ".join(new_props.keys()))
+
+
 def main():
+    print("Sprawdzam kolumny w Notion...")
+    ensure_properties()
     print("Pobieram token dostępu...")
     access_token = get_access_token()
 
@@ -419,7 +453,7 @@ def main():
         page_id = find_notion_page(post_url)
 
         if page_id:
-            update_notion_page(page_id, views, likes, comments, shares)
+            update_notion_page(page_id, views, likes, comments, shares, video.get("duration"))
             print(f"Zaktualizowano: {post_url}")
             updated += 1
         else:
@@ -437,6 +471,7 @@ def main():
                 likes=likes,
                 comments=comments,
                 shares=shares,
+                duration=video.get("duration"),
             )
             print(f"Dodano nowy wiersz: {post_url}")
             created += 1
